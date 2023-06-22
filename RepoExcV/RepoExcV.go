@@ -42,8 +42,7 @@ func New(host string, port int, user string, password string, dbname string) Rep
 	}
 }
 
-func (r Repo) GetValue(jsonResp []byte) interface{} {
-
+func GetValue(jsonResp []byte) interface{} {
 	var value Value
 	err := json.Unmarshal(jsonResp, &value)
 	if err != nil {
