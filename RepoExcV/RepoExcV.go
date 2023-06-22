@@ -42,7 +42,7 @@ func New(host string, port int, user string, password string, dbname string) Rep
 	}
 }
 
-func (r Repo) ExchangeValue(jsonResp []byte) {
+func (r Repo) ExchangeValue(jsonResp []byte) ExcValue{
 
 	var value Value
 	err := json.Unmarshal(jsonResp, &value)
@@ -57,6 +57,9 @@ func (r Repo) ExchangeValue(jsonResp []byte) {
 	ntime := int64(value.Timestamp)
 	v.CreatedOn = time.Unix(ntime, 10000).Format("2006-01-02 15:04:05")
 	fmt.Println("sono qui", v)
-	r.db.Create(v)
+	return v
+}
 
+func (r Repo) AddToDB(v ExcValue){
+	r.db.Create(v)
 }
