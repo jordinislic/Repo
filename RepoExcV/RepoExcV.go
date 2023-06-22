@@ -42,7 +42,7 @@ func New(host string, port int, user string, password string, dbname string) Rep
 	}
 }
 
-func (r Repo) ExchangeValue(jsonResp []byte) ExcValue{
+func (r Repo) GetValue(jsonResp []byte) interface{} {
 
 	var value Value
 	err := json.Unmarshal(jsonResp, &value)
@@ -50,6 +50,15 @@ func (r Repo) ExchangeValue(jsonResp []byte) ExcValue{
 		panic(err)
 	}
 	fmt.Println(value)
+	return value
+}
+
+func (r Repo) AddToDB(val interface{}) {
+	value, ok := val.(Value)
+	if !ok {
+		fmt.Println("not a value")
+		return
+	}
 	var v ExcValue
 	v.CurlFrom = "USD"
 	v.CurlTo = "EUR"
@@ -57,9 +66,5 @@ func (r Repo) ExchangeValue(jsonResp []byte) ExcValue{
 	ntime := int64(value.Timestamp)
 	v.CreatedOn = time.Unix(ntime, 10000).Format("2006-01-02 15:04:05")
 	fmt.Println("sono qui", v)
-	return v
-}
-
-func (r Repo) AddToDB(v ExcValue){
-	r.db.Create(v)
+	r.db.Create(val)
 }
