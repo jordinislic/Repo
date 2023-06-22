@@ -49,15 +49,6 @@ func GetValue(jsonResp []byte) interface{} {
 		panic(err)
 	}
 	fmt.Println(value)
-	return value
-}
-
-func (r Repo) AddToDB(val interface{}) {
-	value, ok := val.(Value)
-	if !ok {
-		fmt.Println("not a value")
-		return
-	}
 	var v ExcValue
 	v.CurlFrom = "USD"
 	v.CurlTo = "EUR"
@@ -65,5 +56,14 @@ func (r Repo) AddToDB(val interface{}) {
 	ntime := int64(value.Timestamp)
 	v.CreatedOn = time.Unix(ntime, 10000).Format("2006-01-02 15:04:05")
 	fmt.Println("sono qui", v)
-	r.db.Create(val)
+	return v
+}
+
+func (r Repo) AddToDB(val interface{}) {
+	value, ok := val.(ExcValue)
+	if !ok {
+		fmt.Println("not a value")
+		return
+	}
+	r.db.Create(value)
 }
