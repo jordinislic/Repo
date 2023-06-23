@@ -3,9 +3,11 @@ package RepoExcV
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"time"
 )
 
 type ExcValue struct {
@@ -57,6 +59,19 @@ func GetValue(jsonResp []byte) interface{} {
 	v.CreatedOn = time.Unix(ntime, 10000).Format("2006-01-02 15:04:05")
 	fmt.Println("sono qui", v)
 	return v
+}
+
+func (r Repo) GetToDB() []byte {
+	var records []ExcValue
+	if err := r.db.Find(&records).Error; err != nil {
+		log.Fatal(err)
+	}
+
+	jsonData, err := json.Marshal(records)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return jsonData
 }
 
 func (r Repo) AddToDB(val interface{}) {
